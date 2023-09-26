@@ -7,6 +7,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,7 @@ public class TaskletJob {
     public Job taskletJobBatchBuild() {
         return jobBuilderFactory.get("taskletJob")
                 .start(taskletJobStep1())
+                .next(taskletJobStep2(null))
                 .build();
     }
 
@@ -30,6 +32,15 @@ public class TaskletJob {
         return stepBuilderFactory.get("taskletJob_step1")
                 .tasklet((a, b) -> {
                     log.debug("-> job -> step1");
+                    return RepeatStatus.FINISHED;
+                }).build();
+    }
+
+    @Bean
+    public Step taskletJobStep2(@Value("#{jobParameters=[date]}") String date) {
+        return stepBuilderFactory.get("taskletJob_step2")
+                .tasklet((a, b) -> {
+                    log.debug("-> step1 -> step2 " + date);
                     return RepeatStatus.FINISHED;
                 }).build();
     }
