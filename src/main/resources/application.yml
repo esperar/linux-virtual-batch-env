@@ -14,9 +14,9 @@ spring:
     password: ${DB_PASSWORD:Esperer123!}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-#  batch:
-#    job:
-#      names: ${job.name:NONE}
+  batch:
+    job:
+      names: --job.name=textJob2 date=20230926 v=2
 
 logging:
   level:
