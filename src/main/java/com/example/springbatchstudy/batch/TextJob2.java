@@ -1,5 +1,6 @@
 package com.example.springbatchstudy.batch;
 
+import com.example.springbatchstudy.custom.CustomPassThroughLineAggregator;
 import com.example.springbatchstudy.dto.OneDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +9,12 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,9 +37,8 @@ public class TextJob2 {
         return stepBuilderFactory.get("textJob2BatchStep1")
                 .<OneDto, OneDto>chunk(chunkSize)
                 .reader(textJob2FileReader())
-                .writer(oneDto -> oneDto.stream().forEach(i -> {
-                    log.debug(i.toString());
-                })).build();
+                .writer(textJob2FileWriter())
+                .build();
     }
 
     @Bean
@@ -44,5 +47,14 @@ public class TextJob2 {
         flatFileItemReader.setResource(new ClassPathResource("/sample/textJob2_input.txt"));
         flatFileItemReader.setLineMapper(((line, lineNumber) -> new OneDto(lineNumber + "_" + line)));
         return flatFileItemReader;
+    }
+
+    @Bean
+    public FlatFileItemWriter<OneDto> textJob2FileWriter() {
+        return new FlatFileItemWriterBuilder<OneDto>()
+                .name("textJob2FileWriter")
+                .resource(new FileSystemResource("output/textJob2_output.txt"))
+                .lineAggregator(new CustomPassThroughLineAggregator<>())
+                .build();
     }
 }
