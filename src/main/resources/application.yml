@@ -16,7 +16,7 @@ spring:
 
   batch:
     job:
-      names: ${JOB_NAME}
+      names: ${job.name:NONE}
 
 logging:
   level:
