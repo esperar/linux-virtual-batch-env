@@ -19,3 +19,7 @@ spring:
     password: ${DB_PASSWORD:Esperer123!}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+logging:
+  level:
+    root: info
+    com.example: debug
