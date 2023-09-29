@@ -3,6 +3,8 @@ package com.example.springbatchstudy.batch;
 import com.example.springbatchstudy.dto.TwoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -21,6 +23,25 @@ public class CsvJob1 {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final static int chunkSize = 5;
+
+    @Bean
+    public Job csvJob1BatchBuild() {
+        return jobBuilderFactory.get("csvJob1")
+                .start(csvJob1BatchStep())
+                .build();
+    }
+
+    @Bean
+    public Step csvJob1BatchStep() {
+        return stepBuilderFactory.get("csvJob1BatchStep")
+                .<TwoDto, TwoDto>chunk(chunkSize)
+                .reader(csvJob1FileReader())
+                .writer(twoDto -> {
+                    twoDto.stream().forEach(twoDto2 -> {
+                        log.debug(twoDto2.toString());
+                    });
+                }).build();
+    }
 
     @Bean
     public FlatFileItemReader<TwoDto> csvJob1FileReader() {
