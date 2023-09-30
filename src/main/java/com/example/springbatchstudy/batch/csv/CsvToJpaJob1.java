@@ -54,9 +54,9 @@ public class CsvToJpaJob1 {
     public FlatFileItemReader<TwoDto> csvToJpaJob1FileReader() {
         FlatFileItemReader<TwoDto> flatFileItemReader = new FlatFileItemReader<>();
         flatFileItemReader.setResource(new ClassPathResource("/sample/csvToJpaJob1_input.csv"));
+        // flatFileItemReader.setLinesToSkip(1);
 
         DefaultLineMapper<TwoDto> defaultLineMapper = new DefaultLineMapper<>();
-
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
         delimitedLineTokenizer.setNames("one", "two");
         delimitedLineTokenizer.setDelimiter(":");
@@ -83,6 +83,4 @@ public class CsvToJpaJob1 {
         jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
         return jpaItemWriter;
     }
-
-
 }

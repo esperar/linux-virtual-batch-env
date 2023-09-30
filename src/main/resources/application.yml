@@ -16,7 +16,7 @@ spring:
 
   batch:
     job:
-      names: ${job.name:NONE}
+      names: ${job.name:csvToJpaJob1}
 
 logging:
   level:
