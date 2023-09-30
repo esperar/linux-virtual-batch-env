@@ -1,4 +1,4 @@
-package com.example.springbatchstudy.batch;
+package com.example.springbatchstudy.batch.tasklet;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

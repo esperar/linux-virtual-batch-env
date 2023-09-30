@@ -16,7 +16,7 @@ spring:
 
   batch:
     job:
-      names: --job.name=textJob2 date=20230926 v=2
+      names: ${job.name:NONE}
 
 logging:
   level:

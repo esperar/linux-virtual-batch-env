@@ -1,4 +1,4 @@
-package com.example.springbatchstudy.batch;
+package com.example.springbatchstudy.batch.text;
 
 import com.example.springbatchstudy.custom.CustomPassThroughLineAggregator;
 import com.example.springbatchstudy.dto.OneDto;

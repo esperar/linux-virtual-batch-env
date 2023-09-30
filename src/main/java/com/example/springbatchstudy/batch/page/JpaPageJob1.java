@@ -1,16 +1,13 @@
-package com.example.springbatchstudy.batch;
+package com.example.springbatchstudy.batch.page;
 
 import com.example.springbatchstudy.domain.Dept;
-import com.example.springbatchstudy.domain.Dept2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +18,7 @@ import javax.persistence.EntityManagerFactory;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-public class JpaPageJob2 {
+public class JpaPageJob1 {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -30,33 +27,26 @@ public class JpaPageJob2 {
     private int chunkSize = 10;
 
     @Bean
-    public Job jpaPageJob2BatchBuild() {
-        return jobBuilderFactory.get("jpaPageJob2")
-                .start(jpaPageJob2Step1())
+    public Job jpaPageJob1BatchBuild() {
+        return jobBuilderFactory.get("jpaPageJob1")
+                .start(jpaPageJob1Step1())
                 .build();
     }
 
     @Bean
-    public Step jpaPageJob2Step1(){
-        return stepBuilderFactory.get("jpaPageJob2_step1")
-                .<Dept, Dept2>chunk(chunkSize)
-                .reader(jpaPageJob2DbItemReader())
-                .processor(jpaPageJob2Processor())
-                .writer(jpaPageJob2PrintItemWriter())
+    public Step jpaPageJob1Step1(){
+        return stepBuilderFactory.get("jpaPageJob1_step1")
+                .<Dept, Dept>chunk(chunkSize)
+                .reader(jpaPageJob1DbItemReader())
+                .writer(jpaPageJob1PrintItemWriter())
                 .build();
 
     }
 
-    private ItemProcessor<Dept, Dept2> jpaPageJob2Processor() {
-        return dept -> {
-            return new Dept2(dept.getId(), "NEW_" + dept.getDName(), "NEW_" + dept.getLoc());
-        };
-    }
-
     @Bean
-    public JpaPagingItemReader<Dept> jpaPageJob2DbItemReader() {
+    public JpaPagingItemReader<Dept> jpaPageJob1DbItemReader() {
         return new JpaPagingItemReaderBuilder<Dept>()
-                .name("jpaPageJob2DbItemReader")
+                .name("jpaPageJob1DbItemReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(chunkSize)
                 .queryString("SELECT d FROM Dept d order by dept_no asc")
@@ -64,11 +54,12 @@ public class JpaPageJob2 {
     }
 
     @Bean
-    public ItemWriter<Dept2> jpaPageJob2PrintItemWriter() {
-        JpaItemWriter<Dept2> jpaItemWriter = new JpaItemWriter<>();
-        jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
-        return jpaItemWriter;
-
+    public ItemWriter<Dept> jpaPageJob1PrintItemWriter() {
+        return list -> {
+            for(Dept dept: list) {
+                log.debug(dept.toString());
+            }
+        };
     }
 
 }
