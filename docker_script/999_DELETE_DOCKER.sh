@@ -1,0 +1,3 @@
+docker stop docker_batch_app
+docker rm docker_batch_app
+docker rimi docker_batch_app_image
