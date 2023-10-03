@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    url: jdbc:mysql://docker_batch_db:3306/r102?serverTimezone=Asia/Seoul
